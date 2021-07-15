@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="807053b6-ac0b-4408-9b33-23b9c174302a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="e819697b-1002-4290-bd83-f94f3b79395e" >
+		<db:my-sql-connection host="database-2.cbllnfkekcdk.us-east-2.rds.amazonaws.com" port="3306" user="salman105" password="sajid105" database="customer_db" />
+	</db:config>
+	<api-gateway:autodiscovery apiId="17063949" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="ffe3d8bd-40d5-4588-bb85-f0245be9ec36" flowRef="radhika8572Flow" />
+	<flow name="radhika8572Flow" doc:id="4c120c2a-6977-4ee4-8177-8c63b28e7df6" >
+		<http:listener doc:name="Listener" doc:id="b4e032fc-81ef-4c2f-8a7e-669b382974af" config-ref="HTTP_Listener_config" path="/racks"/>
+		<db:select doc:name="Select" doc:id="5d0b5255-3d4d-4eb8-b6e0-ad2a939d1e72" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from emp_tbl]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="8ee533f5-3179-4026-9ba4-503b38e1eb4f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
